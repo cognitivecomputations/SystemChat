@@ -3,8 +3,8 @@ from sentence_transformers import SentenceTransformer
 import torch
 import warnings
 from tqdm import tqdm
-import faiss
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
 def setup_logging():
     logging.basicConfig(
@@ -53,32 +53,20 @@ def dedupe(strings, model_name="Snowflake/snowflake-arctic-embed-xs", threshold=
     # Encode strings
     try:
         embeddings = model.encode(unique_strings, convert_to_tensor=True, device=device).cpu().numpy()
-        d = embeddings.shape[1]
     except Exception as e:
         logging.error(f"Error encoding strings: {e}")
         return []
 
-    # Build FAISS index
+    # Compute cosine similarities
     try:
-        index = faiss.IndexFlatL2(d)
-        if device.type == 'cuda':
-            res = faiss.StandardGpuResources()
-            index = faiss.index_cpu_to_gpu(res, 0, index)
-        index.add(embeddings)
-    except Exception as e:
-        logging.error(f"Error building FAISS index: {e}")
-        return []
-
-    # Query the index for duplicates
-    try:
-        distances, indices = index.search(embeddings, k=2)
+        similarities = cosine_similarity(embeddings)
         unique_indices = set()
-        for i in tqdm(range(len(distances)), desc="Checking similarities"):
-            if distances[i][1] >= threshold:
+        for i in tqdm(range(len(similarities)), desc="Checking similarities"):
+            if all(similarities[i][j] < threshold for j in range(len(similarities)) if i != j):
                 unique_indices.add(i)
         unique = [unique_strings[i] for i in unique_indices]
     except Exception as e:
-        logging.error(f"Error querying FAISS index: {e}")
+        logging.error(f"Error computing cosine similarities: {e}")
         return []
 
     logging.info("Deduplication complete")
