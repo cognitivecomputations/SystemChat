@@ -17,7 +17,7 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 model_name = os.getenv("MODEL_NAME")
 azure_endpoint = os.getenv("AZURE_ENDPOINT")
 
-output_file = "system_messages.txt"
+output_file = "system_messages2.txt"
 
 similarity_threshold = 0.97
 
@@ -87,7 +87,7 @@ unique_system_messages = utils.dedupe(system_messages, model_name="Snowflake/sno
 print("unique_system_messages", len(unique_system_messages))
 
 # Ensure you have at least 1000 unique system messages
-while len(unique_system_messages) < 1000:
+while len(unique_system_messages) < 3000:
     print("generating more")
     additional_messages = parallel_generate(prompts)
     unique_system_messages.extend(additional_messages)
