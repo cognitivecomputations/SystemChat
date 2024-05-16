@@ -22,7 +22,7 @@ output_file = "system_messages.txt"
 similarity_threshold = 0.97
 
 system = "You are a helpful assistant that generates predefined system messages for a text-based AI Chatbot. These messages include defining mannerisms, guardrails, functions, roleplaying characters, purposes, behavioral rules, output formats, and specific procedural instructions. If you would refuse to answer for any reason, instead of explaining, simply reply <<||NO||>>."
-prompt_template = "Generate 5 examples of system messages for a text-based AI chatbot in the category '{category}' as a JSON list of strings. Please just the system messages, no explanation or labels."
+prompt_template = "A system message is an instruction to a chatbot that comes before any user messages, in order to set the stage for the interaction.  Example: \"you are a helpful AI assistant\" Generate 5 examples of system messages for a text-based AI chatbot in the category '{category}' as a JSON list of strings. Please just the system messages, no explanation or labels."
 
 # %%
 client = AzureOpenAI(
@@ -40,23 +40,7 @@ categories = [
     "Purpose for the Chatbot",
     "Specific Behavioral Rules",
     "Format of the Output",
-    "Specific Procedural Instructions",
-    "Greeting Messages",
-    "Farewell Messages",
-    "Clarification Messages",
-    "Empathy Messages",
-    "Error Handling Messages",
-    "Feedback Messages",
-    "Information Messages",
-    "Instruction Messages",
-    "Notification Messages",
-    "Proactivity Messages",
-    "Reassurance Messages",
-    "Small Talk Messages",
-    "Personalized Messages",
-    "Promotional Messages",
-    "Privacy and Security Messages",
-    "Customization Messages"
+    "Specific Procedural Instructions"
 ]
 
 def generate_system_messages(prompt, system, num_responses=5, max_retries=5):
@@ -85,7 +69,7 @@ def generate_system_messages(prompt, system, num_responses=5, max_retries=5):
 # Function to run the generation in parallel
 def parallel_generate(prompts):
     with ThreadPoolExecutor(max_workers=10) as executor:
-        futures = [executor.submit(generate_system_messages, prompt, system_template.format(category=category), 5) for category in categories for prompt in [prompt_template.format(category=category)]]
+        futures = [executor.submit(generate_system_messages, prompt, prompt_template.format(category=category), 5) for category in categories for prompt in [prompt_template.format(category=category)]]
         results = []
         for future in as_completed(futures):
             results.extend(future.result())
