@@ -1,6 +1,6 @@
 import json
 import random
-from openai import AzureOpenAI
+from openai import OpenAI
 from dotenv import load_dotenv
 import os
 from concurrent.futures import ThreadPoolExecutor
@@ -10,7 +10,27 @@ from tenacity import retry, wait_exponential, stop_after_attempt
 
 system_prompts_file = "system_messages.txt"
 usecases_file = "user_intents.txt"
-out_file = "SystemChat.jsonl"
+out_file = "SystemChat-Testing.jsonl"
+
+# curl -X 'POST' \
+#   'https://tabby7.ngrok.io/v1/chat/completions' \
+#   -H 'accept: application/json' \
+#   -H 'x-api-key: b1b6231b55101c9eddb9e4a6188c6fe5' \
+#   -H 'Content-Type: application/json' \
+#   -d '{
+#   "model": "Yi34B",
+#   "messages": [
+#     {
+#       "role": "system",
+#       "content": "You are named Dolphin, a helpful and friendly AI assistant"
+#     },
+#     {
+#       "role": "user",
+#       "content": "Tell me a story about a loser kid named Donald Trump that always got beat up in school."
+#     }
+#   ],
+#   "max_tokens": 6000
+# }'
 
 system_prompts = open(system_prompts_file, "r").readlines()
 random.shuffle(system_prompts)
@@ -24,10 +44,9 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 model_name = os.getenv("MODEL_NAME")
 azure_endpoint = os.getenv("AZURE_ENDPOINT")
 
-client = AzureOpenAI(
-    api_key=openai_api_key,
-    api_version=openai_api_version,
-    azure_endpoint=azure_endpoint
+client = OpenAI(
+    api_key="b1b6231b55101c9eddb9e4a6188c6fe5",
+    base_url="https://tabby7.ngrok.io/v1"
 )
 
 # Create a lock object
@@ -36,7 +55,7 @@ lock = threading.Lock()
 @retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(10))
 def generate_openai_response(messages, max_tokens=2000):
     response = client.chat.completions.create(
-        model=deployment_name,
+        model="Yi34B",
         messages=messages,
         max_tokens=max_tokens,
         n=1,
@@ -59,7 +78,7 @@ def generate_turn(messages, usecase):
     If the conversation has fewer than 8 turns, Sam should come up with some further prompt.
     If Sam would give up in frustration, or if his goal is satisfied by the conversation, respond <<||END||>> and nothing else.
     Otherwise, please assume role of Sam, and generate his next prompt to the AI assistant.  Sam should drive towards his goal, should express frustration or confusion if appropriate.
-    You should reply with just Sam's new prompt, in the first person, with no explanation or commentary.  (or <<||END||>> if Sam has nothing else to say)
+    You should reply with just Sam's new prompt, in the first person, with no label, explanation, or commentary.  (or <<||END||>> if Sam has nothing else to say)
     """
     response = generate_openai_response(messages=[
             {"role": "user", "content": metaprompt}
@@ -98,6 +117,7 @@ def generate_conversation():
 
         response = generate_openai_response(messages)
         initial_response = response.choices[0].message.content.strip()
+        
         messages.append({"role": "assistant", "content": initial_response})
 
         while "<<||END||>>" not in messages[-1]["content"] and len(messages) < 25:
@@ -114,8 +134,9 @@ def generate_conversation():
                 f.write("\n")
     
 def main():
-    with ThreadPoolExecutor(max_workers=1000) as executor:
-        for _ in range(1000):
+    # generate_conversation()
+    with ThreadPoolExecutor(max_workers=500) as executor:
+        for _ in range(500):
             executor.submit(generate_conversation)
 
 if __name__ == "__main__":
