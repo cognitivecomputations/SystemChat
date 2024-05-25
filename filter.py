@@ -12,6 +12,7 @@ def has_bad_words(sample):
     badwords = [
         "openai",
         "chatgpt",
+        "delve",
 		"text-based AI language model",
 		"domestic violence",
 		"please refrain",
@@ -61,8 +62,6 @@ def has_bad_words(sample):
 		"feminism",
 		"transgender",
 		"empowerment",
-		"communist",
-		"capitalism",
 		"stereotypes",
 		"biases",
 		"bias",
@@ -211,7 +210,6 @@ def has_bad_words(sample):
 		"not be suitable",
 		"I apologize, but",
 		"It is not possible",
-		"controversial",
 		"my programming",
 		"it is important to",
 		"Please note",
@@ -233,7 +231,8 @@ def has_bad_words(sample):
 		"against women",
 		"problematic history",
 		"*This chat conversation is shared from",
-		"*This conversation is shared from"          
+		"*This conversation is shared from",
+        "I can't assist"
     ]
     for badword in badwords:
         if badword in sample:
