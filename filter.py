@@ -2,8 +2,8 @@ import jsonlines
 import json
 from tqdm import tqdm
 
-in_file = "SystemChat_copy.jsonl"
-out_file = "SystemChat_copy_filtered.jsonl"
+in_file = "SystemChat.jsonl"
+out_file = "SystemChat_filtered.jsonl"
 
 histogram = {}
 

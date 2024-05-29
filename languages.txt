@@ -1,0 +1,100 @@
+Chinese
+Hindi
+Spanish
+French
+Arabic (Abu Dhabi)
+Bengali
+Russian
+Portuguese (Brazil)
+Portuguese (Portugal)
+Indonesian
+Urdu
+German
+Japanese
+Swahili
+Marathi
+Telugu
+Turkish
+Tamil
+Vietnamese
+Korean
+Italian
+Persian (Farsi)
+Punjabi
+Javanese
+Hausa
+Thai
+Polish
+Ukrainian
+Burmese
+Dutch
+Tagalog (Filipino)
+Romanian
+Amharic
+Malay
+Uzbek
+Nepali
+Yoruba
+Sindhi
+Oromo
+Igbo
+Cebuano
+Kannada
+Sinhala
+Azerbaijani
+Pashto
+Malagasy
+Greek
+Hungarian
+Saraiki
+Czech
+Kazakh
+Somali
+Swedish
+Sundanese
+Swati
+Belarusian
+Zulu
+Khmer
+Turkmen
+Madurese
+Serbian
+Bulgarian
+Hebrew
+Afrikaans
+Catalan
+Tajik
+Danish
+Finnish
+Slovak
+Malay (Latin script)
+Lao
+Azerbaijani (Latin script)
+Uzbek (Latin script)
+Tatar
+Shona
+Uyghur
+Kirghiz
+Turkmen (Latin script)
+Norwegian
+Georgian
+Amharic (Ge'ez script)
+Armenian
+Croatian
+Kazakh (Cyrillic script)
+Malagasy (Latin script)
+Albanian
+Lithuanian
+Mongolian (Cyrillic script)
+Tigrinya
+Akan
+Macedonian
+Somali (Latin script)
+Turkmen (Cyrillic script)
+Yoruba (Latin script)
+Bosnian
+Kazakh (Arabic script)
+Pashto (Arabic script)
+Khmer (Khmer script)
+Lao (Lao script)
+Sindhi (Arabic script)

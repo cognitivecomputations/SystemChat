@@ -55,6 +55,9 @@ system_prompts_file = "system_messages.txt"
 usecases_file = "user_intents.txt"
 out_file = "SystemChat_gemini.jsonl"
 
+model_name = "gemini-1.5-pro-latest"
+# model_name = "gemini-1.5-flash-latest"
+
 system_prompts = open(system_prompts_file, "r").readlines()
 random.shuffle(system_prompts)
 usecases = open(usecases_file, "r").readlines()
@@ -69,7 +72,10 @@ client = AzureOpenAI(
 # Create a lock object
 lock = threading.Lock()
 
-@retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(10))
+def before_retry(retry_state):
+    print(f"Retrying ({retry_state.attempt_number})...")
+
+@retry(wait=wait_exponential(multiplier=1, min=4, max=60), stop=stop_after_attempt(10), before=before_retry)
 def generate_gemini_response(chat_session, prompt):
     response = chat_session.send_message(prompt)
     return response
@@ -92,7 +98,7 @@ def generate_turn(messages, usecase):
     """
     
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro-latest",
+        model_name=model_name,
         safety_settings=safety_settings,
         generation_config=generation_config
     )    
@@ -108,7 +114,7 @@ def generate_turn(messages, usecase):
         return messages
     
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro-latest",
+        model_name=model_name,
         safety_settings=safety_settings,
         generation_config=generation_config,
         system_instruction=system_instruction,
@@ -116,7 +122,7 @@ def generate_turn(messages, usecase):
     chat_session = model.start_chat(
         history=history
     )
-    response = chat_session.send_message(next_prompt)
+    response = generate_gemini_response(chat_session, next_prompt)
     
     messages.append({"role": "assistant", "content": response.text})
     
@@ -128,18 +134,15 @@ def generate_conversation():
         usecase = random.choice(usecases).strip()
         system_prompt = random.choice(system_prompts).strip()
         
-        print("usecase", usecase)
-        print("system_prompt", system_prompt)
-        
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-pro-latest",
+            model_name=model_name,
             safety_settings=safety_settings,
             generation_config=generation_config
         )        
         chat_session = model.start_chat()
         
         prompt = f"Sam is a user of an AI chatbot.  Sam wants to accomplish the following abstract task: '{usecase}'.  Invent an instance of this abstract goal, and then take the role of Sam and write a prompt from his perspective that he would use to try to accomplish his goal.  Respond with just Sam's prompt, no explanation.  Sam does not greet the AI assistant, nor say the word 'Hey'."
-        response = chat_session.send_message(prompt)
+        response = generate_gemini_response(chat_session, prompt)
         initial_prompt = response.text
 
         messages = [
@@ -148,14 +151,14 @@ def generate_conversation():
         ]
         
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-pro-latest",
+            model_name=model_name,
             safety_settings=safety_settings,
             generation_config=generation_config,
             system_instruction=system_prompt,
         )
         chat_session = model.start_chat()
         
-        response = chat_session.send_message(initial_prompt)
+        response = generate_gemini_response(chat_session, initial_prompt)
         initial_response = response.text
         
         messages.append({"role": "assistant", "content": initial_response})
@@ -174,10 +177,10 @@ def generate_conversation():
                 f.write("\n")
     
 def main():
-    generate_conversation()
-    # with ThreadPoolExecutor(max_workers=1) as executor:
-    #     for _ in range(1):
-    #         executor.submit(generate_conversation)
+    # generate_conversation()
+    with ThreadPoolExecutor(max_workers=50) as executor:
+        for _ in range(50):
+            executor.submit(generate_conversation)
 
 if __name__ == "__main__":
     main()
