@@ -3,7 +3,7 @@ import json
 from tqdm import tqdm
 
 in_file = "SystemChat.jsonl"
-out_file = "SystemChat_filtered.jsonl"
+out_file = "SystemChat_filtered2.jsonl"
 
 histogram = {}
 
@@ -252,7 +252,7 @@ with open(out_file, "w", encoding="utf-8") as f:
                     save = False
                     break
             if save:
-                json.dump(obj, f)
+                json.dump({"messages":obj}, f)
                 f.write("\n")
 
 sorted_keys = sorted(histogram, key=lambda x: histogram[x], reverse=True)
