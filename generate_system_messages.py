@@ -87,13 +87,17 @@ unique_system_messages = utils.dedupe(system_messages, model_name="Snowflake/sno
 print("unique_system_messages", len(unique_system_messages))
 
 # Ensure you have at least 1000 unique system messages
-while len(unique_system_messages) < 3000:
+while len(unique_system_messages) < 20000:
     print("generating more")
     additional_messages = parallel_generate(prompts)
     unique_system_messages.extend(additional_messages)
     print("before dedupe", len(unique_system_messages))
     unique_system_messages = utils.dedupe(unique_system_messages, model_name="Snowflake/snowflake-arctic-embed-xs", threshold=similarity_threshold)
     print("after dedupe", len(unique_system_messages))
+    with open(output_file, 'w') as f:
+        for message in unique_system_messages:
+            f.write(message)
+            f.write("\n")
 
 # Verify the number of unique system messages
 print(f"Total unique system messages generated: {len(unique_system_messages)}")
@@ -103,8 +107,3 @@ sample_size = 20
 sample_messages = random.sample(unique_system_messages, sample_size)
 for message in sample_messages:
     print(message)
-    
-with open(output_file, 'w') as f:
-    for message in unique_system_messages:
-        f.write(message)
-        f.write("\n")

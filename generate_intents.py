@@ -67,7 +67,22 @@ def main(args):
         "Home and Garden", "Creative Writing", "Legal Advice", "Event Planning", "Language Learning", "Automotive", "Pets",
         "Fashion and Beauty", "Environment and Sustainability", "Hobbies and Crafts", "News and Current Events",
         "Science and Nature", "Spirituality and Religion", "Politics and Government", "Sports and Gaming",
-        "Relationships and Dating", "Customer Service", "Career Development", "Art and Culture", "Accessibility and Disability"
+        "Relationships and Dating", "Customer Service", "Career Development", "Art and Culture", "Accessibility and Disability",
+        "Real Estate", "Healthcare Management", "Emergency Services", "Public Transportation", "Virtual Assistance",
+        "Music and Audio", "Elderly Care", "Cinema and Film", "Data Analysis and Statistics", "Automation and Robotics",
+        "Agriculture and Farming", "Security and Surveillance", "Dance and Performance", "Cultural Heritage",
+        "Nonprofit and Charity", "Volunteering and Community Service", "Wildlife Conservation", "Astrology and Esoterics",
+        "VR and AR Experiences", "Blockchain and Cryptocurrency",
+        "Telecommunications", "Weather Forecasting", "Maritime and Shipping", "Mining and Extraction",
+        "Public Health Initiatives", "Cosmetics and Skincare", "Urban Planning", "Retail Management",
+        "Quantum Computing", "Comics and Manga", "Theater and Performances", "Space Exploration",
+        "Ethics and Compliance", "Photography and Videography", "Youth Outreach", "Antiques and Collectibles",
+        "Library and Information Science", "Infectious Diseases", "Craft Brewing and Distilling", "Genealogy and Ancestry",
+        "Mysticism and Occult Studies", "Alchemical Practices", "Cryptid and Paranormal Research", "Ancient Text Decipherment",
+        "Linguistic Reconstruction", "Experimental Music Composition", "Artificial Intelligence Ethics", "Quantum Mysticism",
+        "Symbolist Poetry Interpretation", "Ritual and Ceremonial Planning", "Surrealist Art Creation", "Mythology and Folklore Analysis",
+        "Interdimensional Communication", "Time Anomalies and Chronostudies", "Psychogeography Mapping", "Esoteric Programming Languages",
+        "Cognitive Archaeology", "Aetheric Energy Research", "Arcane Script Writing", "Celestial Navigation and Astrology"
     ]
 
     print("Generating initial user intents...")
@@ -88,6 +103,10 @@ def main(args):
         print(f"Before deduplication: {len(unique_user_intents)}")
         unique_user_intents = utils.dedupe(unique_user_intents, threshold=similarity_threshold)
         print(f"After deduplication: {len(unique_user_intents)}")
+        with open(output_file, 'w') as f:
+            for intent in unique_user_intents:
+                f.write(intent)
+                f.write("\n")
 
     print(f"Total unique user intents generated: {len(unique_user_intents)}")
 
@@ -96,16 +115,12 @@ def main(args):
     for intent in sample_intents:
         print(intent)
 
-    with open(output_file, 'w') as f:
-        for intent in unique_user_intents:
-            f.write(intent)
-            f.write("\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate and deduplicate user intents for a text-based AI chatbot.")
     parser.add_argument("--similarity_threshold", type=float, default=0.97, help="Threshold for deduplication based on similarity.")
-    parser.add_argument("--output_file", type=str, default="user_intents2.txt", help="Output file for storing user intents.")
-    parser.add_argument("--min_intents", type=int, default=1000, help="Minimum number of unique user intents to generate.")
+    parser.add_argument("--output_file", type=str, default="user_intents4.txt", help="Output file for storing user intents.")
+    parser.add_argument("--min_intents", type=int, default=10000, help="Minimum number of unique user intents to generate.")
 
     args = parser.parse_args()
     main(args)
