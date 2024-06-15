@@ -63,6 +63,7 @@ def generate_turn(messages, usecase):
         ])
 
     next_prompt = response.choices[0].message.content.strip()
+    print("next", next_prompt)
     
     messages.append({"role": "user", "content": next_prompt})
     
@@ -70,12 +71,14 @@ def generate_turn(messages, usecase):
         return messages
     
     response = generate_openai_response(messages)
-    
-    messages.append({"role": "assistant", "content": response.choices[0].message.content.strip()})
+
+    answer = response.choices[0].message.content.strip()
+    print("answer", answer)
+    messages.append({"role": "assistant", "content": answer})
     
     return messages
 
-def generate_conversation():
+def generate_conversation(id):
     time.sleep(random.randint(1,100))
     while True:
         usecase = random.choice(usecases).strip()
@@ -88,12 +91,15 @@ def generate_conversation():
         )
         initial_prompt = response.choices[0].message.content.strip()
 
+        print("initial prompt", initial_prompt)
+
         messages = []
         if not system_prompt is None:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": initial_prompt})
         response = generate_openai_response(messages)
         initial_response = response.choices[0].message.content.strip()
+        print("initial response", initial_response)
         messages.append({"role": "assistant", "content": initial_response})
 
         while "<<||END||>>" not in messages[-1]["content"] and len(messages) < 15:
@@ -110,10 +116,19 @@ def generate_conversation():
                 f.write("\n")
     
 def main():
-    # generate_conversation()
-    with ThreadPoolExecutor(max_workers=1000) as executor:
-        for _ in range(1000):
-            executor.submit(generate_conversation)
+    # Move ThreadPoolExecutor outside the while True loop
+    with ThreadPoolExecutor(max_workers=100) as executor:
+        while True:
+            # Submit new tasks continuously
+            futures = [executor.submit(generate_conversation, i) for i in range(100)]
+            # Optional: Handle futures if you need to process results or exceptions
+            for future in futures:
+                try:
+                    # Wait for a task to complete if necessary or handle results
+                    result = future.result()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     main()
+
