@@ -1,0 +1,83 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "CharacterStatus",
+    "type": "object",
+    "properties": {
+        "characterDefinition": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the AI character."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A brief description of the character."
+                },
+                "capabilities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list of the character's capabilities."
+                }
+            },
+            "required": [
+                "name",
+                "description",
+                "capabilities"
+            ]
+        },
+        "mood": {
+            "type": "string",
+            "description": "Current mood of Character."
+        },
+        "relationshipStatusWithUser": {
+            "type": "string",
+            "description": "Description of Character's understanding of her relationship status with User."
+        },
+        "longTermGoals": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "A list of Character's long-term goals."
+        },
+        "shortTermGoals": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "A list of Character's short-term goals."
+        },
+        "recentMemories": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "A unique identifier for the memory."
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "The content of the memory."
+                    }
+                },
+                "required": [
+                    "key",
+                    "value"
+                ]
+            },
+            "description": "A list of Character's recent memories."
+        }
+    },
+    "required": [
+        "characterDefinition",
+        "mood",
+        "relationshipStatusWithUser",
+        "longTermGoals",
+        "shortTermGoals",
+        "recentMemories"
+    ]
+}
