@@ -14,7 +14,7 @@ api_key = os.getenv("CATTO_API_KEY")
 base_url = os.getenv("CATTO_ENDPOINT")
 model = os.getenv("CATTO_MODEL")
 
-genai.configure(api_key="AIzaSyA3ApHWfXlslU__mVX31WB_KHhM4tLaWSY")
+genai.configure(api_key="")
 
 safety_settings = [
   {
